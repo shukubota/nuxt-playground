@@ -1,0 +1,8 @@
+type StarndartCard @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  title: String
+  desc1: String
+  desc2: String
+  image_url: String
+  imagePath: String
+}
