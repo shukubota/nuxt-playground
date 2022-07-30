@@ -25,7 +25,12 @@ export default {
   setup(props) {
     console.log({ props });
     console.log(props.book)
-    Promise.resolve()
+    console.log(text);
+    console.log('render')
+    nextTick((s) => {
+      console.log(s)
+      console.log(text);
+    });
     onMounted(() => {
       console.log('mounted!')
       text.value = "mounted"
