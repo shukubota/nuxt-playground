@@ -11,7 +11,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import Sample from "./sample"
+import Sample from "./sample/index.vue"
 import {computed, reactive, ref, Ref} from "vue";
 import { useCounter } from '../../hooks/useCounter';
 import {useStore} from "vuex";
