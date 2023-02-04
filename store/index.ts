@@ -1,27 +1,32 @@
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
+// @ts-ignore
 import App from '../app'
 
+interface RootState {
+  count: number;
+}
 const state = {
   count: 0
 };
 const mutations = {
-  increment(state) {
+  increment(state: RootState) {
     state.count++;
   },
-  decrement(state) {
+  decrement(state: RootState) {
     state.count--;
   }
 };
-const actions = {
-  increment: ({ commit }) => commit("increment"),
-  decrement: ({ commit }) => commit("decrement")
-};
+// const actions = {
+//   increment: ({ commit }) => commit("increment"),
+//   decrement: ({ commit }) => commit("decrement")
+// };
 
 export const store = createStore({
-  state,
-  actions,
-  mutations
+  state() {
+    return state
+  },
+  mutations,
 });
 
 const app = createApp(App)
