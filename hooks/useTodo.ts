@@ -1,4 +1,4 @@
-import {reactive} from "vue";
+import {reactive, toRef, toRefs} from "vue";
 
 type TodoStatus = 'doing' | 'done'
 interface Todo {
@@ -11,7 +11,7 @@ interface State {
   addTodoText: string;
 }
 
-interface HTMLEvent<T extends HTMLElement> extends Event {
+interface HTMLEvent<T extends EventTarget> extends Event {
   target: T;
 }
 
@@ -23,15 +23,28 @@ export const useTodo = () => {
   const addTodo = (todo: Todo) => {
     state.todos = [...state.todos, todo];
   }
-  const onChangeAddTodoText = (e: HTMLEvent<HTMLInputElement>) => {
+  const onChangeAddTodoText = (_e: Event) => {
+    const e = _e as HTMLEvent<HTMLInputElement>
     state.addTodoText = e.target.value;
-    console.log(state);
+    console.log(state.addTodoText);
+  }
+
+  const onSubmit = (e: any) => {
+    console.log(e.target)
+    e.preventDefault()
+    addTodo({
+      title: state.addTodoText,
+      status: "doing",
+    });
+    state.addTodoText = '';
   }
 
   console.log(state, "----hook")
   return {
+    // state: toRefs(state),
     state,
     addTodo,
     onChangeAddTodoText,
+    onSubmit,
   }
 }
