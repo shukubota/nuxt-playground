@@ -11,14 +11,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import Sample from "./sample"
+import Sample from "./sample/index.vue"
 import {computed, reactive, ref, Ref} from "vue";
 import { useCounter } from '../../hooks/useCounter';
+import {useRoute} from "vue-router";
 import {useStore} from "vuex";
 
-definePageMeta({
-  title: 'My home page'
-})
+// definePageMeta({
+//   title: 'My home page'
+// })
 
 const route = useRoute()
 const a = ref(1)
@@ -32,7 +33,7 @@ console.log('render demo')
 
 const { counter, updateCounter } = useCounter();
 
-function setup(props) {
+function setup(props: any) {
   console.log('setup in demo')
   console.log({ props });
 }
