@@ -1,59 +1,85 @@
-// import { useAsync } from "@nuxtjs/composition-api"
-
 import {useAsyncData, useState} from "nuxt/app";
-import {Ref} from "vue";
 import useSWRV from "swrv";
-import axios from "axios";
-// import {useAsync} from "@nuxtjs/composition-api";
 
 const wait = (ms: number) => new Promise((res) => setTimeout(res, ms))
-interface InitialData {
+interface RandomNumberData {
   randomNumber: number;
 }
 
-// const _fetchInitialData = async (): Promise<InitialData> => {
-//   const res = await axios.get('https://api.nuxtjs.dev/mountains')
-//   console.log(res)
-//   return res.data;
-// }
-
-const _fetchInitialData = async (a: any): Promise<InitialData> => {
-  console.log(a.ssrContext)
+const _fetchRandomNumberData = async (): Promise<RandomNumberData> => {
   await wait(1000)
-  // 0~3の整数
   const random = Math.floor(Math.random() * 100)
+  if (random % 3 === 0) {
+    throw new Error('error!!!')
+  }
   return {
-    randomNumber: random
+    randomNumber: random,
   }
 }
 
 type RandomValue = number | null;
 export const useSwrExample = () => {
-  const randomValue = useState<RandomValue>("randomValue", () => {
-    return 0
+  const state = useState<number | null>("state", () => {
+    return null;
   })
-  const setRandomValue = (v: number) => {
-    randomValue.value = v;
+  const setState = (v: number | null) => {
+    state.value = v;
   }
 
-  const fetchInitialData = () => {
-    // const {data, pending, error, refresh} = useAsyncData(
-    //   'fetchInitialData',
-    //   () => $fetch('https://api.nuxtjs.dev/mountains'),
-    // )
-    const { data, error } = useAsyncData(
-      'fetchInitialData',
-      _fetchInitialData,
+  const isValidating = useState<boolean>("isValidating", () => {
+    return false;
+  });
+  const setIsValidating = (v: boolean) => {
+    isValidating.value = v;
+  }
+
+  const errorMessage = useState<string | null>('error', () => {
+    return null;
+  });
+  const setError = (e: string | null) => {
+    errorMessage.value = e
+  }
+
+  const fetchWithUseAsyncData = async () => {
+    console.log("-----999")
+    setIsValidating(true);
+    const { data, error } = await useAsyncData(
+      'fetchWithUseAsyncData',
+      _fetchRandomNumberData,
     )
+    setIsValidating(false);
+
+    if (error.value) {
+      setIsValidating(false);
+      setError(error.value.message)
+      setState(null)
+      return;
+    }
+
+    if (data.value) {
+      setError(null)
+      setState(data.value?.randomNumber)
+    }
+  }
+
+  const fetchWithUseSWRV = () => {
 
     // useSWRVを使うならこれだが、server, client間でmismatchする
-    // const { data, error, isValidating, mutate } = useSWRV('fetchInitialData', _fetchInitialData);
+    const { data, error, isValidating, mutate } = useSWRV('fetchWithUseSWRV', _fetchRandomNumberData);
 
-    return { data, error };
+    // stateにセットしたパターン
+    if (data) {
+      console.log(data)
+      // @ts-ignore
+      // setRandomValue(data.value.data as Ref<InitialData>)
+    }
+    return { data, isValidating, error };
   }
   return {
-    fetchInitialData,
-    randomValue: computed(() => randomValue),
-    setRandomValue,
+    fetchWithUseAsyncData,
+    fetchWithUseSWRV,
+    state,
+    errorMessage,
+    isValidating
   }
 }
