@@ -1,5 +1,4 @@
 <script setup>
-console.log('setup');
 import {useSyncDataExample} from "../../../hooks/useSyncDataExample";
 import {useSwrExample} from "../../../hooks/useSwrExample";
 const {
