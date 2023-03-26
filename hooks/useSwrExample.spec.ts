@@ -1,9 +1,11 @@
-import { describe, test, expect, it } from "vitest";
+import { describe, test, expect, it, beforeAll, vi } from "vitest";
+
 // import { mount } from "@vue/test-utils";
 // import HelloMessage from "../../components/HelloMessage.vue";
 
 // import SwrExample from "../pages/demo/swr-example/index.vue";
-import {useSwrExample} from "./useSwrExample";
+import * as useSwrExample from "./useSwrExample";
+import useSWRV from "swrv";
 // import {setup} from "@nuxt/test-utils-edge";
 
 describe('view', () => {
@@ -20,15 +22,27 @@ describe('view', () => {
   // });
   describe('hooks', () => {
     describe('fetchInitialData', () => {
-      const a = 1
-      const { fetchInitialData } = useSwrExample();
-      const res = fetchInitialData();
+      let spy;
+      beforeAll(() => {
+        spy = vi.spyOn(useSwrExample, "_fetchRandomNumberData")
+        const mockRes = {
+          randomNumber: 10,
+        }
+        spy.mockResolvedValue(mockRes)
+      });
+      it("test", async () => {
+        const a = 1
+        const { fetchWithUseSWRV } = useSwrExample.useSwrExample();
 
-      console.log({ res })
+        const b = await useSwrExample._fetchRandomNumberData()
+        console.log({ b })
 
-      it('1 to be 1', () => {
+        // errorになるuseSWRVのmockがうまくいかない
+        // const res = fetchWithUseSWRV();
+        // console.log({ res })
         expect(a).toBe(1);
       });
+
     })
   })
 })

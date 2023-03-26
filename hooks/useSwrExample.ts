@@ -5,7 +5,7 @@ interface RandomNumberData {
   randomNumber: number;
 }
 
-const _fetchRandomNumberData = async (): Promise<RandomNumberData> => {
+export const _fetchRandomNumberData = async (): Promise<RandomNumberData> => {
   await wait(1000)
   const random = Math.floor(Math.random() * 100)
   if (random % 3 === 0) {
@@ -18,6 +18,17 @@ const _fetchRandomNumberData = async (): Promise<RandomNumberData> => {
 export const useSwrExample = () => {
   const fetchWithUseSWRV = () => {
     const { data, error, isValidating, mutate } = useSWRV('fetchWithUseSWRV', _fetchRandomNumberData);
+    // const mockRes = {
+    //   data: {
+    //     test: "a",
+    //   },
+    //   error: null,
+    //   isValidating: true,
+    //   mutate: () => {
+    //     console.log('mutate')
+    //   },
+    // }
+    // const { data, error, isValidating, mutate } = mockRes
     return { data, isValidating, error, mutate };
   }
   return {
